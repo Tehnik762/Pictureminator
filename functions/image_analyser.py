@@ -8,6 +8,7 @@ from skimage.feature import graycomatrix
 from skimage import img_as_ubyte
 
 
+
 def processImage(url):
     """
     This function will accept a destination url of an image and return a dictionary of the image properties
@@ -174,17 +175,16 @@ def detect_faces_opencv(image):
 
     # Вернуть количество обнаруженных лиц
     return len(face_locations)
+	
 def has_text_opencv(gray_image):
 
+    _, binary_image = cv2.threshold(gray_image, 128, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    # Применить адаптивную бинаризацию для выделения текста
-    _, binary_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-    # Найти контуры на бинарном изображении
     contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Проверить, есть ли найденные контуры (текст)
-    return 1 if contours else 0
+    total_area = np.sum([cv2.contourArea(cnt) for cnt in contours])
+
+    return total_area
 
 def calculate_sharpness(gray_image):
     # Вычисление Лапласиана
@@ -211,13 +211,14 @@ def calculate_texture_features(gray_image):
     gray_image = img_as_ubyte(gray_image)
 
     # Вычисление GLCM
-    glcm = graycomatrix(gray_image, [1], [0], symmetric=True, normed=True)
+    glcm = graycomatrix(gray_image, [1], [1], symmetric=True, normed=True)
 
     # Вычисление энергии текстуры
     texture_energy = np.sum(glcm**2)
 
     # Вычисление контраста текстуры
-    texture_contrast = np.sum(glcm*np.arange(0, glcm.shape[3])**2)
+    contrast_values = np.arange(0, glcm.shape[3])
+    texture_contrast = np.sum(contrast_values**2 * np.sum(glcm, axis=(0, 1)))
 
     return {"texture_energy": texture_energy, "texture_contrast": texture_contrast}
 
