@@ -11,3 +11,7 @@
 /images/*/*.jpeg
 /images/*/*.PNG
 /images/test/*/
+*.jpg
+*.JPG
+*.PNG
+*.HEIC

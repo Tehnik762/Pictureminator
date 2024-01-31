@@ -3,14 +3,9 @@ import os
 import pandas as pd
 import time
 from multiprocessing import Pool
-# SETTINGS
-dir_to_scan = "images"
-exclude = [".DS_Store", "0", "1"]
-# WORKFLOW
 
-dirs = os.scandir(dir_to_scan)
 
-def process_file(file_path, start):
+def process_file(file_path, start, i):
     data = []
     small_time = time.time()
     filename = os.path.basename(file_path)
@@ -18,16 +13,19 @@ def process_file(file_path, start):
         info_img = processImage(file_path)
         info_img['filename'] = filename
         data = [info_img]
-    except:
+    except Exception as e:
         print(f"ERROR - {filename}")
-    elapsed_time = time.time() - start
-    small_time = time.time() - small_time
-    print(f"{filename} - {small_time} of the {elapsed_time}")
+        print(e)
+        print(type(e))
+        os.rename(file_path, f"./images/error/{filename}")
+    elapsed_time = round(time.time() - start, 2)
+    small_time = round(time.time() - small_time, 2)
+    print(f"{filename} -Nr {i} - {small_time} of the {elapsed_time}")
     return data
 
 
 def process_folder(folder, start):
-    file_csv = (f"{folder.path}/{folder.name}.csv")
+    file_csv = f"{folder.path}/{folder.name}.csv"
     if not os.path.exists(file_csv):
         db = pd.DataFrame()
         already_scanned = []
@@ -35,17 +33,18 @@ def process_folder(folder, start):
         db = pd.read_csv(file_csv)
         already_scanned = db.filename.to_list()
         already_scanned.append(f"{folder.name}.csv")
-    files_to_process= []
+    files_to_process = []
     if folder.is_dir():
         file_list = os.scandir(folder)
+        i = 1
         for one_file in file_list:
             if one_file.name not in exclude and one_file.name not in already_scanned:
-                files_to_process.append((one_file.path, start))
+                files_to_process.append((one_file.path, start, i))
+                i += 1
 
-        #files_to_process = [file.path for file in os.scandir(folder_path)
-        #                    if file.name not in already_scanned and file.name not in exclude]
-
-        with Pool() as pool:
+        print(f"Ready to scan {i} files")
+        num_processes = os.cpu_count()-1
+        with Pool(num_processes) as pool:
             results = pool.starmap(process_file, files_to_process)
 
         data = [item for sublist in results for item in sublist]
@@ -59,10 +58,17 @@ def process_folder(folder, start):
 
 if __name__ == "__main__":
     start = time.time()
+    # SETTINGS
+    dir_to_scan = "images"
+    exclude = [".DS_Store", "0", "1", "error"]
+    # WORKFLOW
+    dirs = os.scandir(dir_to_scan)
+    n = len(os.listdir(dir_to_scan))
+    print(f"Ready to scan images from {n} directories")
     for directory in dirs:
         if directory.name not in exclude:
+            print(f"Scanning {directory.name}")
             process_folder(directory, start)
 
     elapsed_time = time.time() - start
     print(f"Final - {elapsed_time}")
-

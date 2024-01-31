@@ -5,8 +5,11 @@ from skimage.feature import hog
 from skimage import exposure
 import os
 from skimage.feature import graycomatrix
+from PIL import Image
+import imagehash
 from skimage import img_as_ubyte
-
+from pillow_heif import register_heif_opener
+register_heif_opener()
 
 
 def processImage(url):
@@ -20,7 +23,7 @@ def processImage(url):
     img = cv2.imread(url)
     size = img.shape
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    res['size_w'], res['size_h'], res['ch'] = size[0], size[1], size[2]
+    res['size_w'], res['size_h'] = size[0], size[1]
     res['aspect_ratio'] = res['size_h'] / res['size_w']
     res['mean_value_b'], res['mean_value_g'], res['mean_value_r'] = np.mean(img, axis=(0, 1))
     res['median_value_b'], res['median_value_g'], res['median_value_r'] = np.median(img, axis=(0, 1))
@@ -39,13 +42,12 @@ def processImage(url):
     res['faces'] = detect_faces_opencv(img)
     res['has_text'] = has_text_opencv(gray_image)
     res['filesize'] = os.path.getsize(url)
-    res['depth'] = img.dtype
     res['sharpness'] = calculate_sharpness(gray_image)
     res['gradient'] = calculate_gradients(gray_image)
     res.update(calculate_texture_features(gray_image))
     res["color_balance"] = np.mean([res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r']])
     res["focus_score"] = calculate_focus(gray_image)
-
+    res.update(calculate_image_hashes(url))
 
     return res
 
@@ -215,12 +217,7 @@ def calculate_texture_features(gray_image):
 
     # Вычисление энергии текстуры
     texture_energy = np.sum(glcm**2)
-
-    # Вычисление контраста текстуры
-    contrast_values = np.arange(0, glcm.shape[3])
-    texture_contrast = np.sum(contrast_values**2 * np.sum(glcm, axis=(0, 1)))
-
-    return {"texture_energy": texture_energy, "texture_contrast": texture_contrast}
+    return {"texture_energy": texture_energy}
 
 def calculate_focus(gray_image):
     # Вычисление градиентов по осям X и Y с использованием оператора Собеля
@@ -230,3 +227,19 @@ def calculate_focus(gray_image):
     focus_score = np.mean(gradient_x**2 + gradient_y**2)
 
     return focus_score
+
+def calculate_image_hashes(image_path):
+
+    img = Image.open(image_path)
+
+    average_hash = imagehash.average_hash(img)
+    dhash = imagehash.dhash(img)
+    phash = imagehash.phash(img)
+    colorhash = imagehash.colorhash(img)
+
+    return {
+        "average_hash": int(str(average_hash), 16),
+        "dhash": int(str(dhash), 16),
+        "phash": int(str(phash), 16),
+        "colorhash": int(str(colorhash), 16)
+    }
