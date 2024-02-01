@@ -1,9 +1,12 @@
-from sklearn.pipeline import make_pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.impute import SimpleImputer
 from catboost import CatBoostClassifier
+from sklearn.pipeline import Pipeline
 import lightgbm as lgb
 import multiprocessing
 import numpy as np
@@ -205,11 +208,11 @@ def catboost_model(X_train, y_train, param_cb):
 ###################################################################################
 ### AdaBoost Classifier
 ###################################################################################
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
+
 
 def print_usage_adaboost():
     print("""
+          UPDATED
     Usage of 3classifiers.py:
         from 3classifiers import adaboost_model
     Usage example:
@@ -228,24 +231,64 @@ param_adaboost = {
     'base_estimator__max_depth': [1, 2, 3]
 }
 
-def adaboost_model(X_train, y_train, param_adaboost):
-    # Creating a pipeline with AdaBoost
-    full_pipeline_adaboost = make_pipeline(
-        SimpleImputer(), 
-        MinMaxScaler(), 
-        AdaBoostClassifier(base_estimator=DecisionTreeClassifier())
-    )
+# def adaboost_model(X_train, y_train, param_adaboost):
+#     # Creating a pipeline with AdaBoost
+#     full_pipeline_adaboost = make_pipeline(
+#         SimpleImputer(), 
+#         MinMaxScaler(), 
+#         AdaBoostClassifier(base_estimator=DecisionTreeClassifier())
+#     )
 
-    # Parameter grid for AdaBoost
+#     # Parameter grid for AdaBoost
+#     param_grid_adaboost = {
+#         f'adaboostclassifier__{key}': value if not isinstance(value, list) else value
+#         for key, value in param_adaboost.items()
+#     }
+
+#     # GridSearchCV for AdaBoost
+#     search_adaboost = GridSearchCV(
+#         full_pipeline_adaboost,
+#         param_grid_adaboost,
+#         cv=10,
+#         verbose=1,
+#         n_jobs=multiprocessing.cpu_count() - 1
+#     )
+    
+#     # Timing the fit operation
+#     start_time = time.time()
+#     search_adaboost.fit(X_train, y_train)
+#     end_time = time.time()
+    
+#     total_time = end_time - start_time
+#     minutes = total_time // 60
+#     seconds = total_time % 60
+#     print(f"Time taken to train the model: {int(minutes)} minutes and {seconds:.2f} seconds")
+
+#     print(f"Best parameters: {search_adaboost.best_params_}")
+#     print(f"Best score: {search_adaboost.best_score_}")
+
+#     return search_adaboost
+###################################################################################
+def adaboost_model(X_train, y_train, param_adaboost):
+    # Define the base estimator for AdaBoost
+    base_estimator = DecisionTreeClassifier()
+
+    # Create a pipeline with AdaBoost
+    full_pipeline_adaboost = Pipeline([
+        ('imputer', SimpleImputer()), 
+        ('scaler', MinMaxScaler()), 
+        ('adaboostclassifier', AdaBoostClassifier(base_estimator=base_estimator))
+    ])
+
+    # Adjust the parameter grid for AdaBoost to reflect the pipeline structure
     param_grid_adaboost = {
-        f'adaboostclassifier__{key}': value if not isinstance(value, list) else value
-        for key, value in param_adaboost.items()
+        'adaboostclassifier__' + key: value for key, value in param_adaboost.items()
     }
 
-    # GridSearchCV for AdaBoost
+    # Initialize GridSearchCV with the pipeline and parameter grid
     search_adaboost = GridSearchCV(
         full_pipeline_adaboost,
-        param_grid_adaboost,
+        param_grid=param_grid_adaboost,
         cv=10,
         verbose=1,
         n_jobs=multiprocessing.cpu_count() - 1
@@ -256,13 +299,19 @@ def adaboost_model(X_train, y_train, param_adaboost):
     search_adaboost.fit(X_train, y_train)
     end_time = time.time()
     
+    # Calculate the total time taken
     total_time = end_time - start_time
     minutes = total_time // 60
     seconds = total_time % 60
     print(f"Time taken to train the model: {int(minutes)} minutes and {seconds:.2f} seconds")
 
+    # Print out the best parameters and the best score
     print(f"Best parameters: {search_adaboost.best_params_}")
     print(f"Best score: {search_adaboost.best_score_}")
 
     return search_adaboost
-###################################################################################
+
+
+
+
+
