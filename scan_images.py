@@ -25,6 +25,8 @@ def process_file(file_path, start, i):
 
 
 def process_folder(folder, start):
+    try: exclude
+    except: exclude = []
     file_csv = f"{folder.path}/{folder.name}.csv"
     if not os.path.exists(file_csv):
         db = pd.DataFrame()
