@@ -16,4 +16,3 @@
 *.PNG
 *.HEIC
 /experiments/logs.log
-/external/shape_predictor_68_face_landmarks.dat
