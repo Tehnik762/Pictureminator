@@ -1,7 +1,7 @@
 /.idea/
 /logs.log
-/catboost_info/
-/.ipynb_checkpoints/
+*catboost_info/
+*.ipynb_checkpoints/
 /images/*/*.jpg
 /images/*/*.HEIC
 /images/*/*.heic
@@ -15,3 +15,5 @@
 *.JPG
 *.PNG
 *.HEIC
+/experiments/logs.log
+/external/shape_predictor_68_face_landmarks.dat
