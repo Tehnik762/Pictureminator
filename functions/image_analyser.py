@@ -9,6 +9,8 @@ from PIL import Image
 import imagehash
 from skimage import img_as_ubyte
 from pillow_heif import register_heif_opener
+import dlib
+from scipy.fftpack import fft2, fftshift
 register_heif_opener()
 
 
@@ -29,6 +31,7 @@ def processImage(url):
     res['median_value_b'], res['median_value_g'], res['median_value_r'] = np.median(img, axis=(0, 1))
     res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r'] = np.std(img, axis=(0, 1))
     res["contrast"], res["brightness"] = calculate_contrast_brightness(gray_image)
+    res.update(extract_color_histogram(img))
     features = calculate_hog_features(gray_image)
     res["hog_features_mean"] = np.mean(features)
     res["hog_features_median"] = np.median(features)
@@ -39,10 +42,12 @@ def processImage(url):
     res['n_objects'], res['area'], res['area_mean'], res['area_std'], res['vert'], res['vert_mean'], res['vert_std'],\
         res['color_mean'], res['color_std'] = extract_shape_and_size_features(img)
     res['corners'], res['lines'] = count_corners_and_lines(gray_image)
-    res['faces'] = detect_faces_opencv(img)
+    res.update(detect_faces_opencv(img))
     res['has_text'] = has_text_opencv(gray_image)
     res['filesize'] = os.path.getsize(url)
-    res['sharpness'] = calculate_sharpness(gray_image)
+    res.update(calculate_sharpness(gray_image))
+    res["gaussian_blur"] = estimate_blur_gaussian(gray_image)
+    res['gibson_blur'] = estimate_blur_gibson(gray_image)
     res['gradient'] = calculate_gradients(gray_image)
     res.update(calculate_texture_features(gray_image))
     res["color_balance"] = np.mean([res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r']])
@@ -169,14 +174,27 @@ def count_corners_and_lines(gray_image):
     return corners_count, lines_count
 
 def detect_faces_opencv(image):
-    # Конвертировать изображение из формата OpenCV BGR в RGB (который используется face_recognition)
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-    # Найти все лица на изображении
     face_locations = face_recognition.face_locations(rgb_image)
+    faces = len(face_locations)
+    face_landmarks_list = face_recognition.face_landmarks(rgb_image)
 
-    # Вернуть количество обнаруженных лиц
-    return len(face_locations)
+    blink_count = 0
+
+
+    for landmarks in face_landmarks_list:
+        left_eye = landmarks['left_eye']
+        right_eye = landmarks['right_eye']
+
+        left_eye_aspect_ratio = eye_aspect_ratio(left_eye)
+        right_eye_aspect_ratio = eye_aspect_ratio(right_eye)
+
+        blink_threshold = 0.25
+
+        if left_eye_aspect_ratio < blink_threshold and right_eye_aspect_ratio < blink_threshold:
+            blink_count += 1
+
+    return {"faces": faces, "blink": blink_count}
 	
 def has_text_opencv(gray_image):
 
@@ -191,11 +209,10 @@ def has_text_opencv(gray_image):
 def calculate_sharpness(gray_image):
     # Вычисление Лапласиана
     laplacian = cv2.Laplacian(gray_image, cv2.CV_64F)
-
-    # Вычисление среднеквадратичного значения Лапласиана (оценка резкости)
+    blur_metric = laplacian.var()
     sharpness = np.mean(laplacian**2)
 
-    return sharpness
+    return {"sharpness": sharpness, "blur_metric": blur_metric}
 
 def calculate_gradients(gray_image):
 
@@ -243,3 +260,35 @@ def calculate_image_hashes(image_path):
         "phash": int(str(phash), 16),
         "colorhash": int(str(colorhash), 16)
     }
+
+def extract_color_histogram(image):
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    hist_hue = cv2.calcHist([hsv_image], [0], None, [256], [0, 256])
+    hist_saturation = cv2.calcHist([hsv_image], [1], None, [256], [0, 256])
+    hist_value = cv2.calcHist([hsv_image], [2], None, [256], [0, 256])
+
+    hist_hue /= np.sum(hist_hue)
+    hist_saturation /= np.sum(hist_saturation)
+    hist_value /= np.sum(hist_value)
+
+    return {"hue": hist_hue, "saturation": hist_saturation, "value": hist_value}
+
+def estimate_blur_gaussian(gray_image):
+    blurred = cv2.GaussianBlur(gray_image, (5, 5), 0)
+    blur_metric = np.sum((gray_image - blurred) ** 2)
+    return blur_metric
+
+def estimate_blur_gibson(gray_image):
+    f_transform = fftshift(fft2(gray_image))
+    spectrum = np.abs(f_transform)
+    blur_metric = np.sum(np.log(1 + spectrum))
+    return blur_metric
+
+def eye_aspect_ratio(eye):
+    vertical_dist = eye[1][1] - eye[5][1]
+
+    horizontal_dist = eye[3][0] - eye[0][0]
+    ear = vertical_dist / horizontal_dist
+
+    return ear
