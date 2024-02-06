@@ -10,7 +10,7 @@ def format_seconds(seconds):
     """
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
-    remaining_seconds = seconds % 60
+    remaining_seconds = round(seconds % 60)
 
     result = ""
     if hours > 0:
