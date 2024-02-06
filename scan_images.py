@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import time
 from multiprocessing import Pool
+from functions.format_time import format_seconds
 
 
 def process_file(file_path, start, i):
@@ -18,8 +19,8 @@ def process_file(file_path, start, i):
         print(e)
         print(type(e))
         os.rename(file_path, f"./images/error/{filename}")
-    elapsed_time = round(time.time() - start, 2)
-    small_time = round(time.time() - small_time, 2)
+    elapsed_time = format_seconds(round(time.time() - start, 2))
+    small_time = format_seconds(round(time.time() - small_time, 2))
     print(f"{filename} -Nr {i} - {small_time} of the {elapsed_time}")
     return data
 
@@ -45,7 +46,7 @@ def process_folder(folder, start):
                 i += 1
 
         print(f"Ready to scan {i} files")
-        num_processes = os.cpu_count()-1
+        num_processes = os.cpu_count()-3
         with Pool(num_processes) as pool:
             results = pool.starmap(process_file, files_to_process)
 
@@ -68,9 +69,10 @@ if __name__ == "__main__":
     n = len(os.listdir(dir_to_scan))
     print(f"Ready to scan images from {n} directories")
     for directory in dirs:
+        n -= 1
         if directory.name not in exclude:
-            print(f"Scanning {directory.name}")
+            print(f"Scanning {directory.name}, {n} directories left")
             process_folder(directory, start)
 
-    elapsed_time = time.time() - start
+    elapsed_time = format_seconds(time.time() - start)
     print(f"Final - {elapsed_time}")
