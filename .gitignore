@@ -16,3 +16,5 @@
 *.PNG
 *.HEIC
 /experiments/logs.log
+/classifiers/
+__pycache__
