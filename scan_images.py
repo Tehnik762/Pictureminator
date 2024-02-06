@@ -46,7 +46,7 @@ def process_folder(folder, start):
                 i += 1
 
         print(f"Ready to scan {i} files")
-        num_processes = os.cpu_count()-3
+        num_processes = 4
         with Pool(num_processes) as pool:
             results = pool.starmap(process_file, files_to_process)
 
