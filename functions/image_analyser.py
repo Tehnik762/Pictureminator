@@ -191,8 +191,9 @@ def detect_faces_opencv(image):
 
         blink_threshold = 0.25
 
-        if left_eye_aspect_ratio < blink_threshold and right_eye_aspect_ratio < blink_threshold:
+        if abs(left_eye_aspect_ratio) < blink_threshold and abs(right_eye_aspect_ratio) < blink_threshold:
             blink_count += 1
+
 
     return {"faces": faces, "blink": blink_count}
 	
@@ -269,8 +270,11 @@ def extract_color_histogram(image):
     hist_value = cv2.calcHist([hsv_image], [2], None, [256], [0, 256])
 
     hist_hue /= np.sum(hist_hue)
+    hist_hue = np.mean(hist_hue)
     hist_saturation /= np.sum(hist_saturation)
+    hist_saturation = np.median(hist_saturation)
     hist_value /= np.sum(hist_value)
+    hist_value = np.std(hist_value)
 
     return {"hue": hist_hue, "saturation": hist_saturation, "value": hist_value}
 
