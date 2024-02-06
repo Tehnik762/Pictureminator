@@ -53,7 +53,7 @@ def processImage(url):
     res["color_balance"] = np.mean([res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r']])
     res["focus_score"] = calculate_focus(gray_image)
     res.update(calculate_image_hashes(url))
-
+    del img
     return res
 
 def calculate_contrast_brightness(gray_image):
