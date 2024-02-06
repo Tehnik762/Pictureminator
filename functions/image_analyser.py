@@ -53,7 +53,8 @@ def processImage(url):
     res["color_balance"] = np.mean([res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r']])
     res["focus_score"] = calculate_focus(gray_image)
     res.update(calculate_image_hashes(url))
-
+    del img
+    del gray_image
     return res
 
 def calculate_contrast_brightness(gray_image):
@@ -90,7 +91,7 @@ def extract_color_features(image):
     v_mean = np.mean(v_channel)
     v_median = np.median(v_channel)
     v_std = np.std(v_channel)
-
+    del hsv_image, h_channel, s_channel, v_channel
     # Возвращение извлеченных признаков
     return h_mean, h_median, h_std, s_mean, s_median, s_std, v_mean, v_median, v_std
 
@@ -102,9 +103,6 @@ def extract_shape_and_size_features(img):
 
     # Поиск контуров в бинарном изображении
     contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Инициализация списка для хранения признаков формы и размера
-    shape_and_size_features = []
 
     # Количество объектов
     n = 0
@@ -132,8 +130,6 @@ def extract_shape_and_size_features(img):
         # Вычисление площади контура
         area_sq = cv2.contourArea(contour)
 
-        # Добавление признаков в список
-        # shape_and_size_features.append((len(approx_shape), area))
         n += 1
 
         area += area_sq
@@ -158,7 +154,7 @@ def extract_shape_and_size_features(img):
     vert_std = np.std(vert_list)
     color_mean = np.mean(region_features)
     color_std = np.std(region_features)
-
+    del gray_image, binary_image, contours, region_features
     return n, area, area_mean, area_std, vert, vert_mean, vert_std, color_mean, color_std
 
 def count_corners_and_lines(gray_image):
@@ -170,7 +166,7 @@ def count_corners_and_lines(gray_image):
     edges = cv2.Canny(gray_image, 50, 150, apertureSize=3)
     lines = cv2.HoughLines(edges, 1, np.pi / 180, threshold=100)
     lines_count = len(lines) if lines is not None else 0
-
+    del corners, edges, lines
     return corners_count, lines_count
 
 def detect_faces_opencv(image):
@@ -193,7 +189,7 @@ def detect_faces_opencv(image):
 
         if abs(left_eye_aspect_ratio) < blink_threshold and abs(right_eye_aspect_ratio) < blink_threshold:
             blink_count += 1
-
+    del rgb_image, face_locations, face_landmarks_list
 
     return {"faces": faces, "blink": blink_count}
 	
@@ -204,7 +200,7 @@ def has_text_opencv(gray_image):
     contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     total_area = np.sum([cv2.contourArea(cnt) for cnt in contours])
-
+    del binary_image, contours
     return total_area
 
 def calculate_sharpness(gray_image):
@@ -212,7 +208,7 @@ def calculate_sharpness(gray_image):
     laplacian = cv2.Laplacian(gray_image, cv2.CV_64F)
     blur_metric = laplacian.var()
     sharpness = np.mean(laplacian**2)
-
+    del laplacian
     return {"sharpness": sharpness, "blur_metric": blur_metric}
 
 def calculate_gradients(gray_image):
@@ -235,6 +231,7 @@ def calculate_texture_features(gray_image):
 
     # Вычисление энергии текстуры
     texture_energy = np.sum(glcm**2)
+    del gray_image, glcm
     return {"texture_energy": texture_energy}
 
 def calculate_focus(gray_image):
@@ -254,7 +251,7 @@ def calculate_image_hashes(image_path):
     dhash = imagehash.dhash(img)
     phash = imagehash.phash(img)
     colorhash = imagehash.colorhash(img)
-
+    del img
     return {
         "average_hash": int(str(average_hash), 16),
         "dhash": int(str(dhash), 16),
@@ -275,6 +272,8 @@ def extract_color_histogram(image):
     hist_saturation = np.median(hist_saturation)
     hist_value /= np.sum(hist_value)
     hist_value = np.std(hist_value)
+
+    del hsv_image
 
     return {"hue": hist_hue, "saturation": hist_saturation, "value": hist_value}
 

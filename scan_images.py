@@ -56,6 +56,9 @@ def process_folder(folder, start):
         df = pd.concat([db, df], ignore_index=True)
 
         df.to_csv(file_csv, index=False)
+        del df
+        del data
+        del db
         print(f"Folder - {folder.name} finished!")
 
 
