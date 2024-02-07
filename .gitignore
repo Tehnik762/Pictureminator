@@ -16,3 +16,7 @@
 *.PNG
 *.HEIC
 /experiments/logs.log
+/classifiers/
+__pycache__
+train_to_each_folder
+classifiers_3.py
