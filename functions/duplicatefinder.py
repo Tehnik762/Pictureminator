@@ -31,6 +31,6 @@ def group_similar_images(image_paths):
 
     return unique_images, grouped_images
 
-def are_images_similar(hash1, hash2, threshold=20):
+def are_images_similar(hash1, hash2, threshold=15):
     """Check if two image hashes are similar based on a threshold."""
     return hash1 - hash2 < threshold
