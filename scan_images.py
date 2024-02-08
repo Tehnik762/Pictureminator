@@ -41,7 +41,7 @@ def process_folder(folder, start):
         file_list = os.scandir(folder)
         i = 1
         for one_file in file_list:
-            if one_file.name not in exclude and one_file.name not in already_scanned:
+            if one_file.name not in exclude and one_file.name not in already_scanned and one_file.is_file():
                 files_to_process.append((one_file.path, start, i))
                 i += 1
 

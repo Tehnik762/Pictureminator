@@ -10,7 +10,7 @@ def create(base):
     Returns:
     - None.
     """
-    values = ["screenshots", "documents", "duplicates", "good"]
+    values = ["screenshots", "documents", "duplicates", "good", "not_good"]
     if os.path.exists(base):
         for v in values:
             if not os.path.exists(f"{base}/{v}"):

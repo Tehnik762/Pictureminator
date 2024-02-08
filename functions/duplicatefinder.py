@@ -15,6 +15,7 @@ def group_similar_images(image_paths):
 
     grouped_images = defaultdict(list)
     unique_images = []
+    processed_imgs =[]
 
     for path1 in image_paths:
         is_unique = True
@@ -30,6 +31,6 @@ def group_similar_images(image_paths):
 
     return unique_images, grouped_images
 
-def are_images_similar(hash1, hash2, threshold=10):
+def are_images_similar(hash1, hash2, threshold=20):
     """Check if two image hashes are similar based on a threshold."""
     return hash1 - hash2 < threshold
