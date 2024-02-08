@@ -9,7 +9,7 @@ def format_seconds(seconds):
     str: The formatted time string representing hours, minutes, and remaining seconds.
     """
     hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
+    minutes = int((seconds % 3600) // 60)
     remaining_seconds = round(seconds % 60)
 
     result = ""

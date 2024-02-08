@@ -7,8 +7,13 @@ from functions.allowed import is_allowed
 from functions.folders import create
 import pandas as pd
 from functions.sort_files import sort_files
+from functions.process_dupl import process_duplicates
+from functions.d_models import loadModels
+import time
+from functions.format_time import format_seconds
 
 if __name__ == "__main__":
+    start_time = time.time()
     if len(argv) < 2:
         folder_path = "sort"
     else:
@@ -27,9 +32,11 @@ if __name__ == "__main__":
         # importing data
         images_to_sort = pd.read_csv(f"{folder_path}/{folder.name}.csv")
         # Process screenshots
-        sort_files(images_to_sort, "screenshots_et", f"{folder_path}/screenshots")
+        images_to_sort = sort_files(images_to_sort, "screenshots_final", f"{folder_path}/screenshots", debug=True)
+        images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", debug=True)
         # Process documents
-
+        images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", debug=True)
+        images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", debug=True)
         # Search for duplicates
         images = os.scandir(folder.name)
         image_paths = []
@@ -37,8 +44,41 @@ if __name__ == "__main__":
             if is_allowed(img.name):
                 image_paths.append(img.path)
         unique_images, grouped_images = group_similar_images(image_paths)
-        #print(grouped_images)
-        # {'sort/2015-02-14 11-23-30.JPG': ['sort/2015-02-14 11-23-31.JPG', 'sort/2015-02-14 11-23-26.JPG'], 'sort/2022-01-23_21-51-33.png': ['sort/2022-01-23_21-52-14.png'], 'sort/2015-02-14 11-22-07.JPG': ['sort/2015-02-14 11-21-47.JPG'], 'sort/2015-02-16 19-57-59.JPG': ['sort/2015-02-16 19-57-53.JPG'], 'sort/2015-02-14 11-08-30.JPG': ['sort/2015-02-14 11-08-31.JPG'], 'sort/2015-02-20 20-34-31.JPG': ['sort/2015-02-20 20-34-33.JPG'], 'sort/2015-02-14 10-45-01.JPG': ['sort/2015-02-14 10-44-59.JPG'], 'sort/2015-02-13 18-17-46.JPG': ['sort/2015-02-13 18-17-51.JPG']}
+        # Let's make a plain list for groups
+        similar_images = []
+
+        for step in grouped_images:
+            grouped_images[step].append(step)
+            similar_images.append(grouped_images[step])
+
+        # Let's make a list for non-unqiue images
+        non_unique_images = []
+
+        for step in similar_images:
+            for img in step:
+                non_unique_images.append(img)
+
+        # Let's clean unique images
+
+        for img in non_unique_images:
+            if img in unique_images:
+                unique_images.remove(img)
+
+        # Let's move unique images
+        for img in unique_images:
+            img_name = img.split("/")[-1]
+            os.rename(img, f"{folder_path}/good/{img_name}")
+
+
+
+        models = loadModels()
+        print(f"Processing {len(similar_images)} groups of duplicate images")
+        process_duplicates(similar_images, folder_path, models, images_to_sort, debug=True)
+
+        end_time = time.time()
+        total_time = format_seconds(end_time - start)
+
+        print(f"Total time: {total_time}")
 
     else:
         print(f"{folder_path} is not a folder!")
