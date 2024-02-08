@@ -11,9 +11,13 @@ from functions.process_dupl import process_duplicates
 from functions.d_models import loadModels
 import time
 from functions.format_time import format_seconds
+import logging
+
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, filename='app.log', filemode='w')
     start_time = time.time()
+    logging.info(f"Starting")
     if len(argv) < 2:
         folder_path = "sort"
     else:
@@ -72,13 +76,15 @@ if __name__ == "__main__":
 
 
         models = loadModels()
-        print(f"Processing {len(similar_images)} groups of duplicate images")
+        logging.info(f"Processing {len(similar_images)} groups of duplicate images")
+
         process_duplicates(similar_images, folder_path, models, images_to_sort, debug=True)
 
         end_time = time.time()
         total_time = format_seconds(end_time - start)
 
         print(f"Total time: {total_time}")
+        logging.info(f"Total time: {total_time}")
 
     else:
         print(f"{folder_path} is not a folder!")
