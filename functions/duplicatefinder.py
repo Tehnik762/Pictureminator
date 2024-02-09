@@ -24,7 +24,7 @@ def group_similar_images(image_paths):
 
         for path2 in unique_images:
             if are_images_similar(image_hashes[path1], image_hashes[path2]) and \
-                    abs((get_image_capture_time(path1) - get_image_capture_time(path2[0])).total_seconds()) <= 300:
+                    abs((get_image_capture_time(path1) - get_image_capture_time(path2)).total_seconds()) <= 300:
                 grouped_images[path2].append(path1)
                 is_unique = False
                 break

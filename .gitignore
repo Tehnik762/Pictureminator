@@ -17,3 +17,4 @@ __pycache__
 train_to_each_folder
 /sort/sort.csv
 /app.log
+/result.csv
