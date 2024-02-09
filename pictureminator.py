@@ -79,7 +79,7 @@ if __name__ == "__main__":
         models = loadModels()
         logging.info(f"Processing {len(similar_images)} groups of duplicate images")
 
-        process_duplicates(similar_images, folder_path, models, images_to_sort, debug=True)
+        process_duplicates(similar_images, folder_path, models, images_to_sort)
 
         end_time = time.time()
         total_time = format_seconds(end_time - start)
