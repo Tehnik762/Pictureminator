@@ -46,7 +46,7 @@ if __name__ == "__main__":
         image_paths = []
         for img in images:
             if is_allowed(img.name):
-                image_paths.append(img.path)
+                image_paths.append(folder_path + '/' + img.name)
         unique_images, grouped_images = group_similar_images(image_paths)
         # Let's make a plain list for groups
         similar_images = []
@@ -71,7 +71,8 @@ if __name__ == "__main__":
         # Let's move unique images
         for img in unique_images:
             img_name = img.split("/")[-1]
-            os.rename(img, f"{folder_path}/good/{img_name}")
+            path_to_send = folder_path + "/good/" + img_name
+            os.rename(img, path_to_send)
 
 
 
