@@ -22,11 +22,14 @@ if __name__ == "__main__":
     logging.info(f"Starting")
     if len(argv) < 2:
         folder_path = "sort"
+
     else:
         folder_path = argv[1]
+
     start = time.time()
     if os.path.isdir(folder_path):
         parent_folder = os.path.dirname(os.path.abspath(folder_path))
+        print(parent_folder, )
         with os.scandir(parent_folder) as entries:
             for entry in entries:
                 if entry.name == folder_path:
@@ -79,8 +82,8 @@ if __name__ == "__main__":
             img_data = images_to_sort.loc[images_to_sort["filename"] == img_name]
             img_data.pop("filename")
             score = calculate_a_score(img_data, models)
-            moving_files(score, folder_path,img, path_to_send)
-            #os.rename(img, path_to_send)
+            moving_files(score, folder_path, img, img_name)
+
 
 
 
