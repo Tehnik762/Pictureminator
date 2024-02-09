@@ -4,6 +4,7 @@ import pandas as pd
 import time
 from multiprocessing import Pool
 from functions.format_time import format_seconds
+from functions.allowed import is_allowed
 
 
 def process_file(file_path, start, i):
@@ -42,8 +43,9 @@ def process_folder(folder, start):
         i = 1
         for one_file in file_list:
             if one_file.name not in exclude and one_file.name not in already_scanned and one_file.is_file():
-                files_to_process.append((one_file.path, start, i))
-                i += 1
+                if is_allowed(one_file.name):
+                    files_to_process.append((one_file.path, start, i))
+                    i += 1
 
         print(f"Ready to scan {i} files")
         num_processes = os.cpu_count()-3

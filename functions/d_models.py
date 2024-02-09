@@ -7,8 +7,8 @@ def loadModels():
     regular = joblib.load("./models/regular_final.model")
 
     return {
-        "blinked": [blinked, 2],
-        "not_good": [not_good, 1],
+        "blinked": [blinked, -2],
+        "not_good": [not_good, -1],
         "superb": [superb, 3],
         "regular": [regular, 2]
     }
