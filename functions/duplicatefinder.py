@@ -27,7 +27,7 @@ def group_similar_images(image_paths, image_data):
         for path2 in unique_images:
             path2_name = path2.split("/")[-1]
             if are_images_similar(image_hashes[path1], image_hashes[path2]) and \
-                    abs((get_image_capture_time(path1) - get_image_capture_time(path2)).total_seconds()) <= 300 and \
+                    abs((get_image_capture_time(path1) - get_image_capture_time(path2)).total_seconds()) <= 3000 and \
                     image_data.loc[image_data.filename == path1_name, "faces"].values[0] == \
                     image_data.loc[image_data.filename == path2_name, "faces"].values[0]:
                 grouped_images[path2].append(path1)
@@ -39,7 +39,7 @@ def group_similar_images(image_paths, image_data):
 
     return unique_images, grouped_images
 
-def are_images_similar(hash1, hash2, threshold=15):
+def are_images_similar(hash1, hash2, threshold=14):
     """Check if two image hashes are similar based on a threshold."""
     return hash1 - hash2 < threshold
 
