@@ -12,7 +12,9 @@ from functions.d_models import loadModels
 import time
 from functions.format_time import format_seconds
 import logging
-
+from functions.moving import moving_files
+from functions.d_models import loadModels
+from functions.process_dupl import calculate_a_score
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, filename='app.log', filemode='w')
@@ -69,10 +71,16 @@ if __name__ == "__main__":
                 unique_images.remove(img)
 
         # Let's move unique images
+        models = loadModels()
+
         for img in unique_images:
             img_name = img.split("/")[-1]
             path_to_send = folder_path + "/good/" + img_name
-            os.rename(img, path_to_send)
+            img_data = images_to_sort.loc[images_to_sort["filename"] == img_name]
+            img_data.pop("filename")
+            score = calculate_a_score(img_data, models)
+            moving_files(score, folder_path,img, path_to_send)
+            #os.rename(img, path_to_send)
 
 
 
