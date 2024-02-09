@@ -3,7 +3,7 @@ import imagehash
 from collections import defaultdict
 from pillow_heif import register_heif_opener
 import exifread
-from datetime import datetime, timedelta
+from datetime import datetime
 
 def calculate_image_hash(image_path):
     """Calculate perceptual hash for an image."""
@@ -11,7 +11,7 @@ def calculate_image_hash(image_path):
     img = Image.open(image_path)
     return imagehash.average_hash(img)
 
-def group_similar_images(image_paths):
+def group_similar_images(image_paths, image_data):
     """Group similar images based on perceptual hash."""
     image_hashes = {path: calculate_image_hash(path) for path in image_paths}
 
@@ -22,9 +22,14 @@ def group_similar_images(image_paths):
     for path1 in image_paths:
         is_unique = True
 
+        path1_name = path1.split("/")[-1]
+
         for path2 in unique_images:
+            path2_name = path2.split("/")[-1]
             if are_images_similar(image_hashes[path1], image_hashes[path2]) and \
-                    abs((get_image_capture_time(path1) - get_image_capture_time(path2)).total_seconds()) <= 300:
+                    abs((get_image_capture_time(path1) - get_image_capture_time(path2)).total_seconds()) <= 300 and \
+                    image_data.loc[image_data.filename == path1_name, "faces"].values[0] == \
+                    image_data.loc[image_data.filename == path2_name, "faces"].values[0]:
                 grouped_images[path2].append(path1)
                 is_unique = False
                 break

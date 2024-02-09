@@ -47,7 +47,7 @@ if __name__ == "__main__":
         for img in images:
             if is_allowed(img.name):
                 image_paths.append(folder_path + '/' + img.name)
-        unique_images, grouped_images = group_similar_images(image_paths)
+        unique_images, grouped_images = group_similar_images(image_paths, images_to_sort)
         # Let's make a plain list for groups
         similar_images = []
 
