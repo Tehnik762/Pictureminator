@@ -1,4 +1,5 @@
 from functions.image_analyser import processImage
+from sys import argv
 import os
 import pandas as pd
 import time
@@ -26,7 +27,7 @@ def process_file(file_path, start, i):
     return data
 
 
-def process_folder(folder, start):
+def process_folder(folder, start, rescan=False):
     try: exclude
     except: exclude = [".DS_Store"]
     file_csv = f"{folder.path}/{folder.name}.csv"
@@ -37,6 +38,15 @@ def process_folder(folder, start):
         db = pd.read_csv(file_csv)
         already_scanned = db.filename.to_list()
         already_scanned.append(f"{folder.name}.csv")
+        if rescan:
+            file_list = os.listdir(folder.path)
+            n_deleted = 0
+            for index, row in db.iterrows():
+                if row['filename'] not in file_list:
+                    db.drop(index, inplace=True)
+                    n_deleted += 1
+            print(f"Deleted {n_deleted} files from {folder.name}.csv")
+
     files_to_process = []
     if folder.is_dir():
         file_list = os.scandir(folder)
@@ -73,11 +83,15 @@ if __name__ == "__main__":
     dirs = os.scandir(dir_to_scan)
     n = len(os.listdir(dir_to_scan))
     print(f"Ready to scan images from {n} directories")
+    if len(argv) > 2:
+        rescan = False
+    else:
+        rescan = argv[1]
     for directory in dirs:
         n -= 1
         if directory.name not in exclude:
             print(f"Scanning {directory.name}, {n} directories left")
-            process_folder(directory, start)
+            process_folder(directory, start, rescan)
 
     elapsed_time = format_seconds(time.time() - start)
     print(f"Final - {elapsed_time}")
