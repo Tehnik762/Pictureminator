@@ -22,8 +22,12 @@ if __name__ == "__main__":
     logging.info(f"Starting")
     if len(argv) < 2:
         folder_path = "sort"
+        f_name = "sort"
+        full_path = os.path.abspath(folder_path)
     else:
         folder_path = argv[1]
+        full_path = folder_path
+        f_name = argv[1].split("/")[-1]
         if len(argv) < 3:
             period = 0
         else:
@@ -32,15 +36,15 @@ if __name__ == "__main__":
     start = time.time()
     if os.path.isdir(folder_path):
         parent_folder = os.path.dirname(os.path.abspath(folder_path))
-        print(parent_folder, )
+
         with os.scandir(parent_folder) as entries:
             for entry in entries:
-                if entry.name == folder_path:
+                if entry.name == f_name:
                     process_folder(entry, start)
                     folder = entry
                     break
         # Create folders
-        create(folder.name)
+        create(full_path)
         # importing data
         images_to_sort = pd.read_csv(f"{folder_path}/{folder.name}.csv")
         # Process screenshots
@@ -50,7 +54,7 @@ if __name__ == "__main__":
         images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", debug=True)
         images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", debug=True)
         # Search for duplicates
-        images = os.scandir(folder.name)
+        images = os.scandir(full_path)
         image_paths = []
         for img in images:
             if is_allowed(img.name):
