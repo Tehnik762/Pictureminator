@@ -11,7 +11,7 @@ from skimage import img_as_ubyte
 from pillow_heif import register_heif_opener
 import dlib
 from scipy.fftpack import fft2, fftshift
-register_heif_opener()
+
 
 
 def processImage(url):
@@ -20,9 +20,12 @@ def processImage(url):
     :param url: str
     :return: dict
     """
-
+    register_heif_opener()
     res = {}
-    img = cv2.imread(url)
+    if url.split(".")[-1].lower() == "heic":
+        img = read_heic_image(url)
+    else:
+        img = cv2.imread(url)
     size = img.shape
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     res['size_w'], res['size_h'] = size[0], size[1]
@@ -295,3 +298,8 @@ def eye_aspect_ratio(eye):
     ear = vertical_dist / horizontal_dist
 
     return ear
+
+def read_heic_image(file_path):
+    img = Image.open(file_path)
+    img = np.array(img)
+    return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
