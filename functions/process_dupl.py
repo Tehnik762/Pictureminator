@@ -3,7 +3,9 @@ import os
 from functions.moving import moving_files
 
 def process_duplicates(similar_images, folder_path, models, image_data):
-    logging.basicConfig(level=logging.INFO, filename='../app.log', filemode='a')
+    folder_path = os.path.abspath(folder_path)
+    log_path = os.path.abspath("../app.log")
+    logging.basicConfig(level=logging.INFO, filename=log_path, filemode='a')
     for pack in similar_images:
         scores = []
         for img in pack:
