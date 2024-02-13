@@ -51,3 +51,4 @@ def move_video(video_name, new_path="video"):
     video_path = os.path.abspath(new_path)
     f_name = video_name.split("/")[-1]
     os.rename(video_name, f"{video_path}/{f_name}")
+

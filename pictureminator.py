@@ -73,6 +73,7 @@ if __name__ == "__main__":
             score = calculate_a_score(img_data, models)
             moving_files(score, folder_path, img, img_name, period)
 
+
         logging.info(f"Processing {len(grouped_images)} groups of duplicate images")
 
         process_duplicates(grouped_images, folder_path, models, images_to_sort, period)
