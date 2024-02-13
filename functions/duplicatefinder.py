@@ -27,16 +27,17 @@ def group_similar_images(image_paths, image_data):
     for i, path1 in enumerate(image_paths):
         temp_dupl = []
         for path2 in image_paths[i + 1:]:
-            if are_images_similar(image_hashes[path1], image_hashes[path2]):
-                if capture_times[path1] is None or capture_times[path2] is None:
-                    cont = True
-                else:
-                    cont = abs((capture_times[path1] - capture_times[path2]).total_seconds()) <= 3000
-                face1 = image_data.loc[image_data.filename == path1.split("/")[-1], "faces"].values[0]
-                face2 = image_data.loc[image_data.filename == path2.split("/")[-1], "faces"].values[0]
-                if cont and face1 == face2:
-                    temp_dupl.append(path2)
-                    processed_images.append(path2)
+            if path2 not in processed_images:
+                if are_images_similar(image_hashes[path1], image_hashes[path2]):
+                    if capture_times[path1] is None or capture_times[path2] is None:
+                        cont = True
+                    else:
+                        cont = abs((capture_times[path1] - capture_times[path2]).total_seconds()) <= 3000
+                    face1 = image_data.loc[image_data.filename == path1.split("/")[-1], "faces"].values[0]
+                    face2 = image_data.loc[image_data.filename == path2.split("/")[-1], "faces"].values[0]
+                    if cont and face1 == face2:
+                        temp_dupl.append(path2)
+                        processed_images.append(path2)
         if len(temp_dupl) > 0:
             temp_dupl.append(path1)
             processed_images.append(path1)
@@ -56,9 +57,12 @@ def are_images_similar(hash1, hash2, threshold=14):
 def get_image_capture_time(image_path):
     """Get the capture time of the image from its EXIF data."""
     with open(image_path, 'rb') as f:
-        tags = exifread.process_file(f, details=False)
-        if 'EXIF DateTimeOriginal' in tags:
-            capture_time = tags['EXIF DateTimeOriginal'].values
-            capture_time = datetime.strptime(capture_time, "%Y:%m:%d %H:%M:%S")
-            return capture_time
+        try:
+            tags = exifread.process_file(f, details=False)
+            if 'EXIF DateTimeOriginal' in tags:
+                capture_time = tags['EXIF DateTimeOriginal'].values
+                capture_time = datetime.strptime(capture_time, "%Y:%m:%d %H:%M:%S")
+                return capture_time
+        except:
+            pass
     return None

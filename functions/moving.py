@@ -37,11 +37,14 @@ def create_folders(origin, period, date_info):
 def get_image_capture_time(image_path):
     """Get the capture time of the image from its EXIF data."""
     with open(image_path, 'rb') as f:
-        tags = exifread.process_file(f, details=False)
-        if 'EXIF DateTimeOriginal' in tags:
-            capture_time = tags['EXIF DateTimeOriginal'].values
-            capture_time = datetime.strptime(capture_time, "%Y:%m:%d %H:%M:%S")
-            return capture_time.year, f"{capture_time.month:02}"
+        try:
+            tags = exifread.process_file(f, details=False)
+            if 'EXIF DateTimeOriginal' in tags:
+                capture_time = tags['EXIF DateTimeOriginal'].values
+                capture_time = datetime.strptime(capture_time, "%Y:%m:%d %H:%M:%S")
+                return capture_time.year, f"{capture_time.month:02}"
+        except:
+            pass
     return ["None", "None"]
 
 def move_video(video_name, new_path="video"):
