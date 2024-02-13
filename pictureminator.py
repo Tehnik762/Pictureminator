@@ -40,46 +40,28 @@ if __name__ == "__main__":
         with os.scandir(parent_folder) as entries:
             for entry in entries:
                 if entry.name == f_name:
-                    process_folder(entry, start)
+                    # Create folders
+                    create(full_path)
+                    process_folder(entry, start, rescan=True)
                     folder = entry
                     break
-        # Create folders
-        create(full_path)
+
         # importing data
         images_to_sort = pd.read_csv(f"{folder_path}/{folder.name}.csv")
         # Process screenshots
-        images_to_sort = sort_files(images_to_sort, "screenshots_final", f"{folder_path}/screenshots", debug=True)
-        images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", debug=True)
+        images_to_sort = sort_files(images_to_sort, "screenshots_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
+        images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
         # Process documents
-        images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", debug=True)
-        images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", debug=True)
+        images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
+        images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
         # Search for duplicates
         images = os.scandir(full_path)
         image_paths = []
         for img in images:
             if is_allowed(img.name):
                 image_paths.append(folder_path + '/' + img.name)
+
         unique_images, grouped_images = group_similar_images(image_paths, images_to_sort)
-        # Let's make a plain list for groups
-        similar_images = []
-
-        for step in grouped_images:
-            grouped_images[step].append(step)
-            similar_images.append(grouped_images[step])
-
-        # Let's make a list for non-unqiue images
-        non_unique_images = []
-
-        for step in similar_images:
-            for img in step:
-                non_unique_images.append(img)
-
-        # Let's clean unique images
-
-        for img in non_unique_images:
-            if img in unique_images:
-                unique_images.remove(img)
-
         # Let's move unique images
         models = loadModels()
 
@@ -91,13 +73,9 @@ if __name__ == "__main__":
             score = calculate_a_score(img_data, models)
             moving_files(score, folder_path, img, img_name, period)
 
+        logging.info(f"Processing {len(grouped_images)} groups of duplicate images")
 
-
-
-        models = loadModels()
-        logging.info(f"Processing {len(similar_images)} groups of duplicate images")
-
-        process_duplicates(similar_images, folder_path, models, images_to_sort)
+        process_duplicates(grouped_images, folder_path, models, images_to_sort)
 
         end_time = time.time()
         total_time = format_seconds(end_time - start)

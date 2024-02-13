@@ -54,8 +54,9 @@ def process_folder(folder, start, rescan=False):
         i = 1
         for one_file in file_list:
             if is_video(one_file.name):
+                new_video_path = f"{folder.path}/video"
                 p_video = os.path.abspath(one_file.path)
-                move_video(p_video)
+                move_video(p_video, new_video_path)
             else:
                 if one_file.name not in exclude and one_file.name not in already_scanned and one_file.is_file():
                     if is_allowed(one_file.name):

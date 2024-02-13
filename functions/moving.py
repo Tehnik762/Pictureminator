@@ -44,6 +44,7 @@ def get_image_capture_time(image_path):
             return capture_time.year, f"{capture_time.month:02}"
     return ["None", "None"]
 
-def move_video(video_name):
-    video_path = os.path.abspath("video")
-    os.rename(video_name, f"{video_path}/{video_name}")
+def move_video(video_name, new_path="video"):
+    video_path = os.path.abspath(new_path)
+    f_name = video_name.split("/")[-1]
+    os.rename(video_name, f"{video_path}/{f_name}")
