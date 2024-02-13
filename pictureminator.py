@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
         logging.info(f"Processing {len(grouped_images)} groups of duplicate images")
 
-        process_duplicates(grouped_images, folder_path, models, images_to_sort)
+        process_duplicates(grouped_images, folder_path, models, images_to_sort, period)
 
         end_time = time.time()
         total_time = format_seconds(end_time - start)
