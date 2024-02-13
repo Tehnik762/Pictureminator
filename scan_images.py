@@ -6,7 +6,8 @@ import time
 from multiprocessing import Pool
 from functions.format_time import format_seconds
 from functions.allowed import is_allowed
-
+from functions.allowed import is_video
+from functions.moving import move_video
 
 def process_file(file_path, start, i):
     data = []
@@ -29,7 +30,7 @@ def process_file(file_path, start, i):
 
 def process_folder(folder, start, rescan=False):
     try: exclude
-    except: exclude = [".DS_Store"]
+    except: exclude = [".DS_Store", "video"]
     file_csv = f"{folder.path}/{folder.name}.csv"
     if not os.path.exists(file_csv):
         db = pd.DataFrame()
@@ -52,10 +53,14 @@ def process_folder(folder, start, rescan=False):
         file_list = os.scandir(folder)
         i = 1
         for one_file in file_list:
-            if one_file.name not in exclude and one_file.name not in already_scanned and one_file.is_file():
-                if is_allowed(one_file.name):
-                    files_to_process.append((one_file.path, start, i))
-                    i += 1
+            if is_video(one_file.name):
+                p_video = os.path.abspath(one_file.path)
+                move_video(p_video)
+            else:
+                if one_file.name not in exclude and one_file.name not in already_scanned and one_file.is_file():
+                    if is_allowed(one_file.name):
+                        files_to_process.append((one_file.path, start, i))
+                        i += 1
 
         print(f"Ready to scan {i} files")
         num_processes = os.cpu_count()-3
@@ -78,12 +83,12 @@ if __name__ == "__main__":
     start = time.time()
     # SETTINGS
     dir_to_scan = "images"
-    exclude = [".DS_Store", "0", "1", "error"]
+    exclude = [".DS_Store", "0", "1", "error", "video"]
     # WORKFLOW
     dirs = os.scandir(dir_to_scan)
     n = len(os.listdir(dir_to_scan))
     print(f"Ready to scan images from {n} directories")
-    if len(argv) > 2:
+    if len(argv) < 2:
         rescan = False
     else:
         rescan = argv[1]

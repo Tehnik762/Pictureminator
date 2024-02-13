@@ -42,3 +42,7 @@ def get_image_capture_time(image_path):
             capture_time = datetime.strptime(capture_time, "%Y:%m:%d %H:%M:%S")
             return capture_time.year, f"{capture_time.month:02}"
     return ["None", "None"]
+
+def move_video(video_name):
+    video_path = os.path.abspath("video")
+    os.rename(video_name, f"{video_path}/{video_name}")
