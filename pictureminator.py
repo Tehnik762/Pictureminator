@@ -26,12 +26,14 @@ if __name__ == "__main__":
         full_path = os.path.abspath(folder_path)
     else:
         folder_path = argv[1]
+        if folder_path[-1] == "/":
+            folder_path = folder_path[:-1]
         full_path = folder_path
-        f_name = argv[1].split("/")[-1]
-        if len(argv) < 3:
-            period = 0
-        else:
-            period = argv[2]
+        f_name = folder_path.split("/")[-1]
+    if len(argv) < 3:
+        period = 0
+    else:
+        period = argv[2]
 
     start = time.time()
     if os.path.isdir(folder_path):
@@ -47,7 +49,7 @@ if __name__ == "__main__":
                     break
 
         # importing data
-        images_to_sort = pd.read_csv(f"{folder_path}/{folder.name}.csv")
+        images_to_sort = pd.read_csv(f"{folder_path}/{f_name}.csv")
         # Process screenshots
         images_to_sort = sort_files(images_to_sort, "screenshots_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
         images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
@@ -60,8 +62,13 @@ if __name__ == "__main__":
         for img in images:
             if is_allowed(img.name):
                 image_paths.append(folder_path + '/' + img.name)
+        logging.info(f"Dividing {len(image_paths)} images into duplicates")
 
         unique_images, grouped_images = group_similar_images(image_paths, images_to_sort)
+        logging.info(f"Found {len(unique_images)} unique images")
+        logging.info(unique_images)
+        logging.info(f"Found {len(grouped_images)} groups of duplicate images")
+        logging.info(grouped_images)
         # Let's move unique images
         models = loadModels()
 

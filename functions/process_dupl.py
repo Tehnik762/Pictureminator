@@ -30,11 +30,13 @@ def process_duplicates(similar_images, folder_path, models, image_data, period=0
             logging.info(f"{best_image} - {max_score} - other scores: {scores}")
         logging.info(f"Pack - {pack}")
         best_image_name = best_image.split("/")[-1]
-
+        logging.info(f"Best image: {best_image_name}")
         moving_files(max_score, folder_path, best_image, best_image_name, period)
 
         for bad in pack:
+            logging.info(f"Bad image: {bad}")
             if bad != best_image:
+                logging.info(f"Moving {bad} to {folder_path}/duplicates")
                 bad_name = bad.split("/")[-1]
                 os.rename(bad, f"{folder_path}/duplicates/{bad_name}")
 
