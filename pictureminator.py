@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
         # importing data
         images_to_sort = pd.read_csv(f"{folder_path}/{f_name}.csv")
+        images_to_sort = images_to_sort.fillna(0)
         # Process screenshots
         images_to_sort = sort_files(images_to_sort, "screenshots_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
         images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
