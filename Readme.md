@@ -2,6 +2,8 @@
 
 Pictureminator is a program developed as part of the Data Science course at WBS CODING SCHOOL.
 
+![Pictureminator](https://github.com/Tehnik762/Pictureminator/blob/master/pictureminator.jpg?raw=true)
+
 ## Overview
 The main idea of the program is to use pre-trained models to classify incoming photos into groups such as documents, screenshots, video files, duplicates, and photos of average or superior quality.
 
