@@ -11,7 +11,7 @@ from skimage import img_as_ubyte
 from pillow_heif import register_heif_opener
 import dlib
 from scipy.fftpack import fft2, fftshift
-
+register_heif_opener()
 
 
 def processImage(url):
@@ -20,16 +20,22 @@ def processImage(url):
     :param url: str
     :return: dict
     """
-    register_heif_opener()
+
     res = {}
     if url.split(".")[-1].lower() == "heic":
         img = read_heic_image(url)
     else:
         img = cv2.imread(url)
+    res['filesize'] = os.path.getsize(url)
+
     size = img.shape
-    gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     res['size_w'], res['size_h'] = size[0], size[1]
     res['aspect_ratio'] = res['size_h'] / res['size_w']
+
+    #Resize image
+    img = resize_image(img)
+    gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
     res['mean_value_b'], res['mean_value_g'], res['mean_value_r'] = np.mean(img, axis=(0, 1))
     res['median_value_b'], res['median_value_g'], res['median_value_r'] = np.median(img, axis=(0, 1))
     res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r'] = np.std(img, axis=(0, 1))
@@ -47,7 +53,7 @@ def processImage(url):
     res['corners'], res['lines'] = count_corners_and_lines(gray_image)
     res.update(detect_faces_opencv(img))
     res['has_text'] = has_text_opencv(gray_image)
-    res['filesize'] = os.path.getsize(url)
+
     res.update(calculate_sharpness(gray_image))
     res["gaussian_blur"] = estimate_blur_gaussian(gray_image)
     res['gibson_blur'] = estimate_blur_gibson(gray_image)
@@ -303,3 +309,12 @@ def read_heic_image(file_path):
     img = Image.open(file_path)
     img = np.array(img)
     return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+def resize_image(image, max_dimension=1000):
+    height, width = image.shape[:2]
+    if max(height, width) > max_dimension:
+        scale_factor = max_dimension / max(height, width)
+        resized_image = cv2.resize(image, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_AREA)
+        return resized_image
+    else:
+        return image
