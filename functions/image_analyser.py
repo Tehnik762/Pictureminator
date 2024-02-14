@@ -22,8 +22,12 @@ def processImage(url):
     """
 
     res = {}
+    if url.split(".")[-1].lower() == "heic":
+        img = read_heic_image(url)
+    else:
+        img = cv2.imread(url)
     res['filesize'] = os.path.getsize(url)
-    img = cv2.imread(url)
+
     size = img.shape
     res['size_w'], res['size_h'] = size[0], size[1]
     res['aspect_ratio'] = res['size_h'] / res['size_w']
@@ -300,6 +304,11 @@ def eye_aspect_ratio(eye):
     ear = vertical_dist / horizontal_dist
 
     return ear
+
+def read_heic_image(file_path):
+    img = Image.open(file_path)
+    img = np.array(img)
+    return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
 def resize_image(image, max_dimension=1000):
     height, width = image.shape[:2]
