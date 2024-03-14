@@ -8,7 +8,7 @@ Pictureminator is a program developed as part of the Data Science course at WBS 
 The main idea of the program is to use pre-trained models to classify incoming photos into groups such as documents, screenshots, video files, duplicates, and photos of average or superior quality.
 
 ## Installation
-To install, clone the repository and execute `pip install` for all required packages.
+To install, clone the repository and execute `pip install -r requirements.txt` for all required packages.
 
 ## Usage
 After installing all packages, you can run the program using the following command:
