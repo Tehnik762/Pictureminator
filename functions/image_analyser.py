@@ -31,6 +31,16 @@ def processImage(url):
     size = img.shape
     res['size_w'], res['size_h'] = size[0], size[1]
     res['aspect_ratio'] = res['size_h'] / res['size_w']
+    res['sum_pixels'] = img.sum()
+    res['std_pixels'] = img.std()
+    res['mean_pixels'] = img.mean()
+
+    pop_rare = calculate_popular_and_rare_pixels(img)
+    c_name = ["b", "g", "r"]
+    i = 0
+    for ch in pop_rare:
+        res["pop_" + c_name[i]], res["pop_n_" + c_name[i]], res["rare_" + c_name[i]], res["rare_n_" + c_name[i]] = ch
+        i += 1
 
     #Resize image
     img = resize_image(img)
@@ -318,3 +328,24 @@ def resize_image(image, max_dimension=1000):
         return resized_image
     else:
         return image
+
+
+def calculate_popular_and_rare_pixels(image):
+    result = []
+
+    height, width, channels = image.shape
+
+    for channel in range(channels):
+        unique_values, counts = np.unique(image[:, :, channel], return_counts=True)
+
+        popular_index = np.argmax(counts)
+        rare_index = np.argmin(counts)
+
+        popular_pixel = unique_values[popular_index]
+        rare_pixel = unique_values[rare_index]
+        popular_count = counts[popular_index]
+        rare_count = counts[rare_index]
+
+        result.append((popular_pixel, popular_count, rare_pixel, rare_count))
+
+    return result
