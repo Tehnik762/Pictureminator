@@ -9,7 +9,6 @@ from PIL import Image
 import imagehash
 from skimage import img_as_ubyte
 from pillow_heif import register_heif_opener
-import dlib
 from scipy.fftpack import fft2, fftshift
 register_heif_opener()
 
