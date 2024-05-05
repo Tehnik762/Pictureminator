@@ -10,5 +10,8 @@ Pillow==10.1.0
 scikit-image==0.22.0
 scikit-learn==1.2.2
 scipy==1.11.4
+PyQt5==5.15.10
+PyQt5-sip==12.13.0
+
 
 ExifRead~=3.0.0
