@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QPushButton, QFileDialog
-from PyQt5.QtCore import QPropertyAnimation, QEasingCurve, pyqtProperty, QSize
+from PyQt5.QtCore import QPropertyAnimation, QEasingCurve, QSize
 
 
 
