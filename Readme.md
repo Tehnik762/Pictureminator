@@ -24,6 +24,26 @@ After sorting, several folders will be created where the final photos will be or
 
 Additionally, you can pass a parameter `year` or `month` after the folder name in the command line. In the first case, the photos will be sorted by the year of creation, and in the second case, the months of creation will be added within the years.
 
+## GUI
+In the interface folder there is a file called Pictureminator_GUI.py - it is the first interface build in order to have an nice-looking and easier to use user experience.
+After running
+
+```
+python Pictureminator_GUI.py
+```
+
+a GUI will appear. The user must now only select (or paste) in the search bar the link to the folder with the pictures that needs sorting, and select the sorting type that is prefered:
+
+`Monthly Sorting` - which sorts the pictures based on year and month,
+
+`Year Sorting` - only based on year, and
+
+`No sorting` - which is obvious, no type of sorting based of the date of the picture.
+
+
+**--- Curently we are working on connecting the GUI with the back-sorting program. When finished this line will be deleted ---**
+
+
 ## Development Stage
 The program is currently in the development stage.
 
