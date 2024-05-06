@@ -28,8 +28,12 @@ def processImage(url):
     res['filesize'] = os.path.getsize(url)
 
     size = img.shape
-    res['size_w'], res['size_h'] = size[0], size[1]
+    res['size_w'], res['size_h'] = size[1], size[0]
     res['aspect_ratio'] = res['size_h'] / res['size_w']
+    if res['aspect_ratio'] > 1:
+        res['landscape'] = False
+    else:
+        res['landscape'] = True
     res['sum_pixels'] = img.sum()
     res['std_pixels'] = img.std()
     res['mean_pixels'] = img.mean()
