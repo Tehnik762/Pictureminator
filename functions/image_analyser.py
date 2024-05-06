@@ -34,11 +34,13 @@ def processImage(url):
         res['landscape'] = False
     else:
         res['landscape'] = True
+
     res['sum_pixels'] = img.sum()
     res['std_pixels'] = img.std()
     res['mean_pixels'] = img.mean()
 
     pop_rare = calculate_popular_and_rare_pixels(img)
+
     c_name = ["b", "g", "r"]
     i = 0
     for ch in pop_rare:
@@ -53,6 +55,7 @@ def processImage(url):
     res['median_value_b'], res['median_value_g'], res['median_value_r'] = np.median(img, axis=(0, 1))
     res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r'] = np.std(img, axis=(0, 1))
     res["contrast"], res["brightness"] = calculate_contrast_brightness(gray_image)
+    res['hist_std'] = calculate_hist_std(img)
     res.update(extract_color_histogram(img))
     features = calculate_hog_features(gray_image)
     res["hog_features_mean"] = np.mean(features)
@@ -75,6 +78,7 @@ def processImage(url):
     res["color_balance"] = np.mean([res['std_deviation_b'], res['std_deviation_g'], res['std_deviation_r']])
     res["focus_score"] = calculate_focus(gray_image)
     res.update(calculate_image_hashes(url))
+    res.update(calculate_fourier_transform(img))
     del img
     del gray_image
     return res
@@ -352,3 +356,17 @@ def calculate_popular_and_rare_pixels(image):
         result.append((popular_pixel, popular_count, rare_pixel, rare_count))
 
     return result
+
+def calculate_hist_std(image):
+    hist, bins = np.histogram(image.flatten(), 256, [0, 256])
+    hist = hist / np.sum(hist)
+    return np.std(hist)
+
+
+def calculate_fourier_transform(image):
+    fft = np.fft.fft2(image)
+    fft_shift = np.fft.fftshift(fft)
+    dominant_frequency = np.argmax(np.abs(fft_shift))
+    frequency_spread = np.std(np.angle(fft_shift))
+    frequency_asymmetry = np.mean(np.abs(fft_shift) * np.exp(1j * np.angle(fft_shift)))
+    return {"dominant_frequency": dominant_frequency, "frequency_spread": frequency_spread, "frequency_asymmetry": np.abs(frequency_asymmetry)}
