@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Pictureminator")
         MainWindow.resize(850, 650)
-        MainWindow.setWindowIcon(QtGui.QIcon('E:/Git&GitHub/Pictureminator/interface/resources/pictureminator_170x170.png'))
+        MainWindow.setWindowIcon(QtGui.QIcon('interface/resources/pictureminator_170x170.png'))
         
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -99,7 +99,7 @@ class Ui_MainWindow(object):
         self.path_find.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid gray; opacity: .2;")
         self.path_find.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("E:/Git&GitHub/Pictureminator/interface/resources/search_icon_06.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("interface/resources/search_icon_06.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.path_find.setIcon(icon)
         self.path_find.setIconSize(QtCore.QSize(60, 50))
         self.path_find.setCheckable(False)
@@ -172,11 +172,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.monthly_switch.setIconSize(QtCore.QSize(50, 50))
         self.monthly_switch.setCheckable(True)
@@ -242,11 +242,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.yearly_switch.setIconSize(QtCore.QSize(50, 50))
         self.yearly_switch.setCheckable(True)
@@ -312,11 +312,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.nosorting_switch.setIconSize(QtCore.QSize(50, 50))
         self.nosorting_switch.setCheckable(True)
