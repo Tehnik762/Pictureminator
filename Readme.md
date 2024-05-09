@@ -10,6 +10,17 @@ The main idea of the program is to use pre-trained models to classify incoming p
 ## Installation
 To install, clone the repository and execute `pip install -r requirements.txt` for all required packages.
 
+If you are having issues installing **`dlib`** library, you might need to follow this steps:
+
+-- install **Visual Studio Community** (free version: https://visualstudio.microsoft.com/free-developer-offers/)
+
+-- from **Visual Studio Installer** - select and install **Desktop development with C++**
+
+-- download and install **CMake** from here: https://cmake.org/download/
+
+-- reinstall **`dlib`** library in your environment
+
+
 ## Usage
 After installing all packages, you can run the program using the following command:
 
