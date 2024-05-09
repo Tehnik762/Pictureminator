@@ -21,7 +21,7 @@ def sort_files(data, model, folder, source_fld="sort", debug=False,*args, **kwar
         print(f"Model {model} not found!")
         return 0
     filenames = data.pop("filename").to_list()
-
+    source_fld = os.path.abspath(source_fld)
     if debug: print(f"Sorting {len(filenames)} images")
     predict = model.predict(data)
     data["filename"] = filenames

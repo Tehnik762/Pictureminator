@@ -14,3 +14,11 @@ def is_allowed(name):
     name = name.lower()
     name = name.split(".")[-1]
     return name in pict
+
+def is_video(name):
+    """
+    Checks if the given name is a video based on its file extension.
+    """
+    name = name.lower()
+    name = name.split(".")[-1]
+    return name in ["mp4", "mov", "avi", "mkv"]

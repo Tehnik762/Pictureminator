@@ -2,8 +2,10 @@ import logging
 import os
 from functions.moving import moving_files
 
-def process_duplicates(similar_images, folder_path, models, image_data):
-    logging.basicConfig(level=logging.INFO, filename='../app.log', filemode='a')
+def process_duplicates(similar_images, folder_path, models, image_data, period=0):
+    folder_path = os.path.abspath(folder_path)
+    log_path = os.path.abspath("../app.log")
+    logging.basicConfig(level=logging.INFO, filename=log_path, filemode='a')
     for pack in similar_images:
         scores = []
         for img in pack:
@@ -28,11 +30,13 @@ def process_duplicates(similar_images, folder_path, models, image_data):
             logging.info(f"{best_image} - {max_score} - other scores: {scores}")
         logging.info(f"Pack - {pack}")
         best_image_name = best_image.split("/")[-1]
-
-        moving_files(max_score, folder_path, best_image, best_image_name)
+        logging.info(f"Best image: {best_image_name}")
+        moving_files(max_score, folder_path, best_image, best_image_name, period)
 
         for bad in pack:
+            logging.info(f"Bad image: {bad}")
             if bad != best_image:
+                logging.info(f"Moving {bad} to {folder_path}/duplicates")
                 bad_name = bad.split("/")[-1]
                 os.rename(bad, f"{folder_path}/duplicates/{bad_name}")
 
