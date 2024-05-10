@@ -45,7 +45,7 @@ def calculate_a_score(img_data, models):
 
     for model in models:
 
-        score += models[model][0].predict(img_data)[0]*models[model][1]
+        score += models[model][0].predict_proba(img_data)[0][1]*models[model][1]
 
     return score
 

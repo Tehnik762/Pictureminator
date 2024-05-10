@@ -9,6 +9,6 @@ def loadModels():
     return {
         "blinked": [blinked, -2],
         "not_good": [not_good, -1],
-        "superb": [superb, 3],
-        "regular": [regular, 2]
+        "superb": [superb, 2],
+        "regular": [regular, 1]
     }

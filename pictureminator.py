@@ -8,7 +8,6 @@ from functions.folders import create
 import pandas as pd
 from functions.sort_files import sort_files
 from functions.process_dupl import process_duplicates
-from functions.d_models import loadModels
 import time
 from functions.format_time import format_seconds
 import logging
@@ -57,7 +56,7 @@ if __name__ == "__main__":
         images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
         # Process documents
         images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
-        images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
+        #images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
         # Search for duplicates
         images = os.scandir(full_path)
         image_paths = []

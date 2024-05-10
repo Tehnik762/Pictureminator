@@ -33,7 +33,7 @@ def group_similar_images(image_paths, image_data):
                     if capture_times[path1] is None or capture_times[path2] is None:
                         cont = True
                     else:
-                        cont = abs((capture_times[path1] - capture_times[path2]).total_seconds()) <= 1000
+                        cont = abs((capture_times[path1] - capture_times[path2]).total_seconds()) <= 300
                     face1 = image_data.loc[image_data.filename == path1.split("/")[-1], "faces"].values[0]
                     face2 = image_data.loc[image_data.filename == path2.split("/")[-1], "faces"].values[0]
                     if cont and face1 == face2:
