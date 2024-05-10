@@ -8,7 +8,6 @@ from functions.folders import create
 import pandas as pd
 from functions.sort_files import sort_files
 from functions.process_dupl import process_duplicates
-from functions.d_models import loadModels
 import time
 from functions.format_time import format_seconds
 import logging
