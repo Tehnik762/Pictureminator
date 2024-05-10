@@ -56,7 +56,7 @@ if __name__ == "__main__":
         images_to_sort = sort_files(images_to_sort, "screenshots_ph_final", f"{folder_path}/screenshots", source_fld=folder_path, debug=True)
         # Process documents
         images_to_sort = sort_files(images_to_sort, "docs_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
-        images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
+        #images_to_sort = sort_files(images_to_sort, "receipts_final", f"{folder_path}/documents", source_fld=folder_path, debug=True)
         # Search for duplicates
         images = os.scandir(full_path)
         image_paths = []
