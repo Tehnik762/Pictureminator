@@ -1,4 +1,6 @@
 from sys import argv
+
+from functions.duplicate import group_similar
 from scan_images import process_folder, process_file
 import time
 import os
@@ -64,18 +66,25 @@ if __name__ == "__main__":
             if is_allowed(img.name):
                 image_paths.append(folder_path + '/' + img.name)
         logging.info(f"Dividing {len(image_paths)} images into duplicates")
+        # Let's move unique images
+        models = loadModels()
 
-        unique_images, grouped_images = group_similar_images(image_paths, images_to_sort)
+
+
+
+
+        #unique_images, grouped_images = group_similar_images(image_paths, images_to_sort)
+        unique_images, grouped_images = group_similar(image_paths, images_to_sort)
+
         logging.info(f"Found {len(unique_images)} unique images")
         logging.info(unique_images)
         logging.info(f"Found {len(grouped_images)} groups of duplicate images")
         logging.info(grouped_images)
-        # Let's move unique images
-        models = loadModels()
+
 
         for img in unique_images:
             img_name = img.split("/")[-1]
-            path_to_send = folder_path + "/good/" + img_name
+            #path_to_send = folder_path + "/good/" + img_name
             img_data = images_to_sort.loc[images_to_sort["filename"] == img_name]
             img_data.pop("filename")
             score = calculate_a_score(img_data, models)
@@ -84,7 +93,7 @@ if __name__ == "__main__":
 
         logging.info(f"Processing {len(grouped_images)} groups of duplicate images")
 
-        process_duplicates(grouped_images, folder_path, models, images_to_sort, period)
+        process_duplicates(grouped_images, folder_path, models, images_to_sort, True, period)
 
         end_time = time.time()
         total_time = format_seconds(end_time - start)

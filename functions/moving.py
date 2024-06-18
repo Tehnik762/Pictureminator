@@ -6,10 +6,10 @@ from datetime import datetime
 def moving_files(max_score, folder_path, best_image, best_image_name, period=0):
     date_info = get_image_capture_time(best_image)
     best_image = os.path.abspath(best_image)
-    if max_score > 1:
+    if max_score > 1.5:
         path_to_go = create_folders(f"{folder_path}/super/", period, date_info)
         os.rename(best_image, path_to_go + best_image_name)
-    elif max_score >= 0:
+    elif max_score >= 0.5:
         path_to_go = create_folders(f"{folder_path}/good/", period, date_info)
         os.rename(best_image,  path_to_go + best_image_name)
     else:
