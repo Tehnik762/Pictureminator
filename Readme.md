@@ -20,6 +20,25 @@ If you are having issues installing **`dlib`** library, you might need to follow
 
 -- reinstall **`dlib`** library in your environment
 
+<br>
+<p align="left"><b>OR ⬇</b></p>
+
+## Installation (New Simplified Setup)
+
+To install Pictureminator, simply **clone or download** the repository and then:
+
+1. Double-click **`setup_pictureminator.bat`**
+   - This will automatically:
+     - install Python 3.10 locally (from `.local_python` folder)
+     - create the virtual environment `.venv`
+     - install all required dependencies from `requirements.txt`
+
+2. After setup is complete, double-click **`start_pictureminator.bat`**
+   - This will automatically launch the graphical interface (GUI).
+
+You do **not** need to install Python or run any terminal commands manually.
+
+
 
 ## Usage
 After installing all packages, you can run the program using the following command:
