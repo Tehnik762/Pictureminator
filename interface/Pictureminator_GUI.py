@@ -1,8 +1,10 @@
 import sys
 import os
+import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QPushButton, QFileDialog
 from PyQt5.QtCore import QPropertyAnimation, QEasingCurve, QSize
+from PyQt5.QtWidgets import QMessageBox
 
 
 
@@ -40,14 +42,14 @@ class Ui_MainWindow(object):
         print(self.sorting_path)
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Pictureminator")
-        MainWindow.resize(850, 650)
-        MainWindow.setWindowIcon(QtGui.QIcon('E:/Git&GitHub/Pictureminator/interface/resources/pictureminator_170x170.png'))
+        MainWindow.setFixedSize(920, 700)
+        MainWindow.setWindowIcon(QtGui.QIcon('interface/resources/pictureminator_170x170.png'))
         
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
         self.lower_frame = QtWidgets.QFrame(self.centralwidget)
-        self.lower_frame.setGeometry(QtCore.QRect(0, -11, 900, 711))
+        self.lower_frame.setGeometry(QtCore.QRect(0, -11, 950, 711))
         self.lower_frame.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.lower_frame.setMouseTracking(False)
         self.lower_frame.setTabletTracking(False)
@@ -60,7 +62,7 @@ class Ui_MainWindow(object):
 
         # Search bar
         self.search_bar = QtWidgets.QLineEdit(self.lower_frame)
-        self.search_bar.setGeometry(QtCore.QRect(127, 580, 500, 31))
+        self.search_bar.setGeometry(QtCore.QRect(130, 600, 640, 31))
         self.search_bar.setPlaceholderText("Enter path here or browse to select")
 
         font = QtGui.QFont()
@@ -95,11 +97,11 @@ class Ui_MainWindow(object):
         
         # Browse Button
         self.path_find = QtWidgets.QPushButton(self.lower_frame)
-        self.path_find.setGeometry(QtCore.QRect(560, 571, 70, 50))
+        self.path_find.setGeometry(QtCore.QRect(703, 591, 70, 50))
         self.path_find.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid gray; opacity: .2;")
         self.path_find.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("E:/Git&GitHub/Pictureminator/interface/resources/search_icon_06.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("interface/resources/search_icon_06.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.path_find.setIcon(icon)
         self.path_find.setIconSize(QtCore.QSize(60, 50))
         self.path_find.setCheckable(False)
@@ -110,7 +112,7 @@ class Ui_MainWindow(object):
         ## Switches
         # Monthly Switch
         self.monthly_switch = QtWidgets.QCheckBox(self.lower_frame)
-        self.monthly_switch.setGeometry(QtCore.QRect(132, 530, 161, 31))
+        self.monthly_switch.setGeometry(QtCore.QRect(150, 545, 180, 31))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(232, 232, 232))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -172,11 +174,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.monthly_switch.setIconSize(QtCore.QSize(50, 50))
         self.monthly_switch.setCheckable(True)
@@ -186,7 +188,7 @@ class Ui_MainWindow(object):
 
         # Yearly Switch Button
         self.yearly_switch = QtWidgets.QCheckBox(self.lower_frame)
-        self.yearly_switch.setGeometry(QtCore.QRect(315, 530, 151, 31))
+        self.yearly_switch.setGeometry(QtCore.QRect(360, 545, 180, 31))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(232, 232, 232))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -242,11 +244,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.yearly_switch.setIconSize(QtCore.QSize(50, 50))
         self.yearly_switch.setCheckable(True)
@@ -256,7 +258,7 @@ class Ui_MainWindow(object):
 
         # No Sorting Switch Button
         self.nosorting_switch = QtWidgets.QCheckBox(self.lower_frame)
-        self.nosorting_switch.setGeometry(QtCore.QRect(487, 530, 131, 31))
+        self.nosorting_switch.setGeometry(QtCore.QRect(570, 545, 180, 31))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(232, 232, 232))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -312,11 +314,11 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QCheckBox::indicator:checked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_on_06.png\");\n"
+"    image: url(\"interface/resources/tw_on_06.png\");\n"
 "}\n"
 "\n"
 "QCheckBox::indicator:unchecked {\n"
-"    image: url(\"E:/Git&GitHub/Pictureminator/interface/resources/tw_off_05.png\");\n"
+"    image: url(\"interface/resources/tw_off_05.png\");\n"
 "}")
         self.nosorting_switch.setIconSize(QtCore.QSize(50, 50))
         self.nosorting_switch.setCheckable(True)
@@ -326,19 +328,19 @@ class Ui_MainWindow(object):
 
         # Main Picture Setup
         self.label = QtWidgets.QLabel(self.lower_frame)
-        self.label.setGeometry(QtCore.QRect(105, 60, 640, 420))
+        self.label.setGeometry(QtCore.QRect(130, 80, 640, 430))
         self.label.setStyleSheet("border-radius: 5px; border: 4px solid rgb(232, 232, 232);")
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("resources/vid_01_000.jpg"))
+        self.label.setPixmap(QtGui.QPixmap("interface/resources/vid_01_000.jpg"))
         self.label.setObjectName("label")
 
         # Start Sorting Button
         # self.start_sorting = QtWidgets.QPushButton(self.lower_frame)
         self.start_sorting = AnimatedButton(self.lower_frame)
-        self.start_sorting.setGeometry(QtCore.QRect(645, 485, 91, 131))
+        self.start_sorting.setGeometry(QtCore.QRect(800, 520, 91, 131))
         self.start_sorting.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("resources/pictureminator_124x204.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("interface/resources/pictureminator_124x204.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.start_sorting.setIcon(icon1)
         self.start_sorting.setIconSize(QtCore.QSize(125, 125))
         self.start_sorting.setObjectName("start_sorting")
@@ -415,28 +417,65 @@ class Ui_MainWindow(object):
                 # If yearly is unchecked, check nosorting.
                 self.nosorting_switch.setChecked(True)
 
+
+
     def start_sorting_clicked(self):
-        # Check if self.sorting_path is not empty and is a valid path
         if self.sorting_path and os.path.exists(self.sorting_path):
-            print(f"Path: {self.sorting_path}")
-            # Check which switch is checked and print the appropriate message.
+            normalized_path = os.path.normpath(self.sorting_path).replace('\\', '/')
+            print(f"Path: {normalized_path}")
+            command = [sys.executable, "pictureminator.py", normalized_path]
+
             if self.nosorting_switch.isChecked():
                 print("Sort: No Sorting")
             elif self.yearly_switch.isChecked():
                 print("Sort: Yearly Sorting")
+                command.append("year")
             elif self.monthly_switch.isChecked():
                 print("Sort: Monthly Sorting")
+                command.append("month")
             else:
                 print("No sorting option is selected.")
-        else:
-            print("No valid path provided.")
+                return  
 
-  
+            try:
+                result = subprocess.run(command, check=True, capture_output=True, text=True)
+                print(result.stdout)
+
+                # ✅ SUCCESS MESSAGE WITH ICON + GREEN CHECK IN TITLE
+                msg_box = QMessageBox()
+                msg_box.setWindowTitle("Pictureminator")
+                msg_box.setIconPixmap(QtGui.QPixmap("interface/resources/done.png").scaled(48, 48, QtCore.Qt.KeepAspectRatio))
+                msg_box.setText("Sorting completed successfully!")
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
+
+                self.search_bar.clear()  # 🧹 clear the text bar
+
+            except subprocess.CalledProcessError as e:
+                # ❌ ERROR MESSAGE WITH RED ICON
+                msg_box = QMessageBox()
+                msg_box.setWindowTitle("Pictureminator")
+                msg_box.setIcon(QMessageBox.Critical)
+                msg_box.setText("An error occurred while executing the sorting process.")
+                msg_box.setDetailedText(e.stderr)
+                msg_box.exec_()
+
+        else:
+            # ⚠️ WARNING MESSAGE WITH YELLOW TRIANGLE ICON
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Pictureminator")
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText("No valid path provided.")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+
+
+
 if __name__ == "__main__":
-        import sys
-        app = QtWidgets.QApplication(sys.argv)
-        MainWindow = QtWidgets.QMainWindow()
-        ui = Ui_MainWindow()
-        ui.setupUi(MainWindow)
-        MainWindow.show()
-        sys.exit(app.exec_())
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

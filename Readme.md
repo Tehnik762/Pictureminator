@@ -20,6 +20,30 @@ If you are having issues installing **`dlib`** library, you might need to follow
 
 -- reinstall **`dlib`** library in your environment
 
+<br>
+<p align="left"><b>OR</b></p>
+
+## Installation (Simplified Setup)
+
+**Platform:** Windows 10 or newer (64-bit only)
+
+Pictureminator includes a self-contained installation and management system.  
+To install and run the program, simply **clone or download** the repository and then:
+
+1. Double-click **`pictureminator_manager.bat`**  
+   This launcher provides an interactive setup and control menu.
+
+   From the menu, you can:
+   - **[1] Start Pictureminator** – runs the application  
+   - **[2] Setup Environment** – installs Python 3.10 (if not already present), creates the local virtual environment `.venv`, and installs all dependencies from `requirements.txt`  
+   - **[3] Reinstall Python 3.10** – performs a clean reinstall of Python 3.10.11 (64-bit) globally, using a silent installer from the official Python.org source, and updates the system PATH  
+   - **[4] Open Scripts Folder** – opens the helper script directory  
+   - **[5] Exit** – closes the manager
+
+2. After installation, choose **option 1** to start the application.
+
+All steps are fully automated — you do not need to install Python manually or run any terminal commands.  
+The installer downloads the official Python 3.10.11 (64-bit) package, performs a silent global installation, and ensures that `python.exe` is available system-wide via the PATH variable.
 
 ## Usage
 After installing all packages, you can run the program using the following command:
